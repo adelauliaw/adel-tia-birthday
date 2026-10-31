@@ -181,6 +181,15 @@
   .gallery-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
   .gallery-grid img{display:block;width:100%;border-radius:16px;border:1px solid var(--card-brd)}
   @media(max-width:420px){.gallery-grid{grid-template-columns:1fr}}
+  .contact-choices{border:0;padding:12px 0 18px;margin:0;display:flex;justify-content:center;gap:12px}
+  .contact-choices legend{width:100%;text-align:center;color:var(--ink);padding-bottom:12px}
+  .contact-choices label{position:relative;cursor:pointer;flex:1;max-width:160px}
+  .contact-choices input{position:absolute;opacity:0;width:1px;height:1px}
+  .contact-choices span{display:block;padding:14px 20px;border:2px solid #9871bd;border-radius:16px;background:#fff;color:#44205f;font-weight:700}
+  .contact-choices input:checked+span{background:#7740a7;color:#fff;border-color:#e7c877;box-shadow:0 0 0 2px #e7c877}
+  .contact-choices input:focus-visible+span{outline:3px solid #e7c877;outline-offset:4px}
+  #music{width:auto;min-width:54px;padding:0 18px;border:2px solid #e7c877;background:#65358f;color:#fff;font-size:14px;font-weight:700}
+  #music.on{animation:none}
 </style>
 </head>
 <body>
@@ -194,7 +203,7 @@
     <span class="crown">🕯️</span>
     <p class="eyebrow">Birthday Dinner Invitation</p>
     <h1 class="script">Princess Adelia<span class="name-and">&amp;</span>Queen Tia</h1>
-    <div class="rule"><span>✧ 2nd &amp; 1st Generation ✧</span></div>
+    <div class="rule"><span>2 Generations Party</span></div>
 
     <div class="photo-frame empty" id="photoFrame">
       <img id="photo" alt="Princess Adelia &amp; Queen Tia" />
@@ -205,7 +214,7 @@
     <p class="guestname" id="guestName">Tamu Istimewa</p>
   </section>
 
-  <!-- ============ COUNTDOWN ============ -->
+<!-- ============ COUNTDOWN ============ -->
   <section class="card" id="countdown">
     <p class="eyebrow">Menuju malam itu</p>
     <h2 class="script">Hitung Mundur</h2>
@@ -257,6 +266,11 @@
     <p class="eyebrow">Konfirmasi kehadiran</p>
     <h2 class="script">RSVP</h2>
     <p>Kabari ya, biar kursi di meja dinner-nya<br>sudah siap menunggumu.</p>
+    <fieldset class="contact-choices">
+      <legend>Konfirmasi ke:</legend>
+      <label><input type="radio" name="rsvpContact" value="adel" checked><span>👑 Adel</span></label>
+      <label><input type="radio" name="rsvpContact" value="tia"><span>👑 Tia</span></label>
+    </fieldset>
     <a class="btn primary" id="rsvpYes" href="#" target="_blank" rel="noopener">💜 Aku Hadir!</a>
     <a class="btn" id="rsvpNo" href="#" target="_blank" rel="noopener">🥀 Maaf, Belum Bisa Hadir</a>
     <p class="note" style="margin-top:16px">Mohon konfirmasi sebelum 21 November 2026</p>
@@ -272,8 +286,9 @@
   <p class="foot">🕯️ Birthday Dinner · Princess Adelia &amp; Queen Tia · 28.11.2026 🕯️</p>
 </div>
 
-<button id="music" title="Putar / hentikan musik" aria-label="Putar musik">🎵</button>
 
+
+<button id="music" type="button" aria-label="Putar musik" aria-pressed="false">▶ Musik</button>
 <script>
 /* =========================================================
    0) FOTO — tempel data URI di sini (data:image/jpeg;base64,...)
@@ -337,13 +352,17 @@ const nameEl = document.getElementById("guestName");
 
 function renderGuest(){
   nameEl.textContent = guest ? guest.name : "Tamu Istimewa";
-  const msgYes = `Hai Adelia! ${guest ? guest.name : "Aku"} konfirmasi *HADIR* di birthday dinner Princess Adelia & Queen Tia — 2nd & 1st Generation, ${EVENT.dateText} di ${EVENT.venue}. See you! \u{1F56F}\u{FE0F}\u{1F49C}`;
-  const msgNo  = `Hai Adelia! Maaf banget, ${guest ? guest.name : "aku"} *belum bisa hadir* di birthday dinner kalian tanggal 28 November. Happy birthday ya, Princess Adelia & Queen Tia! \u{1F49C}`;
-  document.getElementById("rsvpYes").href = `https://wa.me/${EVENT.waNumber}?text=${encodeURIComponent(msgYes)}`;
-  document.getElementById("rsvpNo").href  = `https://wa.me/${EVENT.waNumber}?text=${encodeURIComponent(msgNo)}`;
+  const contact = document.querySelector('input[name="rsvpContact"]:checked').value;
+  const contactName = contact === "tia" ? "Tia" : "Adelia";
+  const contactNumber = contact === "tia" ? "628993218787" : EVENT.waNumber;
+  const msgYes = `Hai ${contactName}! ${guest ? guest.name : "Aku"} konfirmasi *HADIR* di birthday dinner Princess Adelia & Queen Tia — 2 Generations Party, ${EVENT.dateText} di ${EVENT.venue}. See you! \u{1F56F}\u{FE0F}\u{1F49C}`;
+  const msgNo  = `Hai ${contactName}! Maaf banget, ${guest ? guest.name : "aku"} *belum bisa hadir* di birthday dinner kalian tanggal 28 November. Happy birthday ya, Princess Adelia & Queen Tia! \u{1F49C}`;
+  document.getElementById("rsvpYes").href = `https://wa.me/${contactNumber}?text=${encodeURIComponent(msgYes)}`;
+  document.getElementById("rsvpNo").href  = `https://wa.me/${contactNumber}?text=${encodeURIComponent(msgNo)}`;
 }
 
 renderGuest();
+document.querySelectorAll('input[name="rsvpContact"]').forEach(input => input.addEventListener("change", renderGuest));
 
 /* ---------- countdown ---------- */
 const target = new Date(EVENT.startISO).getTime();
@@ -428,14 +447,18 @@ btn.addEventListener("click", () => {
     const len = schedule();
     loopId = setInterval(() => { if (playing) schedule(); }, len * 1000);
     playing = true;
-    btn.textContent = "🎶";
+    btn.textContent = "Ⅱ Musik";
+    btn.setAttribute("aria-pressed", "true");
+    btn.setAttribute("aria-label", "Jeda musik");
     btn.classList.add("on");
   } else {
     clearInterval(loopId);
     if (ctx) ctx.close();
     ctx = null;
     playing = false;
-    btn.textContent = "🎵";
+    btn.textContent = "▶ Musik";
+    btn.setAttribute("aria-pressed", "false");
+    btn.setAttribute("aria-label", "Putar musik");
     btn.classList.remove("on");
   }
 });
