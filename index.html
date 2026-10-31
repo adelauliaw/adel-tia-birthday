@@ -300,9 +300,9 @@ const PHOTO = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQ
    1) DETAIL ACARA  — edit di sini
    ========================================================= */
 const EVENT = {
-  startISO : "2026-11-28T17:00:00+07:00",
+  startISO : "2026-11-28T19:00:00+07:00",
   dateText : "Sabtu, 28 November 2026",
-  timeText : "17.00 – 20.00 WIB",
+  timeText : "19.00 – 22.00 WIB",
   venue    : "ARTOTEL Casa Kuningan",
   address  : "Jl. Prof. DR. Satrio, Kuningan, Jakarta Selatan",
   mapsQuery: "ARTOTEL Casa Kuningan Jakarta",
@@ -353,7 +353,7 @@ const nameEl = document.getElementById("guestName");
 function renderGuest(){
   nameEl.textContent = guest ? guest.name : "Tamu Istimewa";
   const contact = document.querySelector('input[name="rsvpContact"]:checked').value;
-  const contactName = contact === "tia" ? "Tia" : "Adelia";
+  const contactName = contact === "tia" ? "Tia" : "Adel";
   const contactNumber = contact === "tia" ? "628993218787" : EVENT.waNumber;
   const msgYes = `Hai ${contactName}! ${guest ? guest.name : "Aku"} konfirmasi *HADIR* di birthday dinner Princess Adelia & Queen Tia — 2 Generations Party, ${EVENT.dateText} di ${EVENT.venue}. See you! \u{1F56F}\u{FE0F}\u{1F49C}`;
   const msgNo  = `Hai ${contactName}! Maaf banget, ${guest ? guest.name : "aku"} *belum bisa hadir* di birthday dinner kalian tanggal 28 November. Happy birthday ya, Princess Adelia & Queen Tia! \u{1F49C}`;
